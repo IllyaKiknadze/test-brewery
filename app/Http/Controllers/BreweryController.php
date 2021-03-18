@@ -16,19 +16,16 @@ use Throwable;
 
 class BreweryController extends Controller
 {
-    protected BreweryService $breweryService;
-    protected ApiService     $apiService;
+    protected ApiService $apiService;
     const BREWERY_URL = 'https://api.openbrewerydb.org/';
 
     /**
      * BreweryController constructor.
      * @param ApiService $apiService
-     * @param BreweryService $breweryService
      */
-    public function __construct(ApiService $apiService, BreweryService $breweryService)
+    public function __construct(ApiService $apiService)
     {
-        $this->breweryService = $breweryService;
-        $this->apiService     = $apiService;
+        $this->apiService = $apiService;
     }
 
     public function getBreweries(GetBreweriesRequest $request): JsonResponse
@@ -38,9 +35,14 @@ class BreweryController extends Controller
             $response = $this->apiService->send($url);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
-        return response()->json(BreweryResource::collection($this->breweryService->processBreweriesResponse($response)));
+
+        foreach ($response as &$brewery) {
+            $brewery = new Brewery($brewery);
+        }
+
+        return response()->json(BreweryResource::collection($response));
     }
 
     public function getBrewery($brewery): JsonResponse
@@ -49,7 +51,7 @@ class BreweryController extends Controller
             $response = $this->apiService->send(self::BREWERY_URL . "breweries/$brewery");
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
 
         return response()->json(BreweryResource::make(new Brewery($response)));
