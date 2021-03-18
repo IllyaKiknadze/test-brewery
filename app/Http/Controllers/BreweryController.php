@@ -6,11 +6,7 @@ use App\Http\Requests\GetBreweriesRequest;
 use App\Http\Resources\BreweryResource;
 use App\Models\Brewery;
 use App\Services\ApiService;
-use App\Services\BreweryService;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
