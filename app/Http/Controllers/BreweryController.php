@@ -24,6 +24,10 @@ class BreweryController extends Controller
         $this->apiService = $apiService;
     }
 
+    /**
+     * @param GetBreweriesRequest $request
+     * @return JsonResponse
+     */
     public function getBreweries(GetBreweriesRequest $request): JsonResponse
     {
         try {
@@ -41,6 +45,10 @@ class BreweryController extends Controller
         return response()->json(BreweryResource::collection($response));
     }
 
+    /**
+     * @param $brewery
+     * @return JsonResponse
+     */
     public function getBrewery($brewery): JsonResponse
     {
         try {
